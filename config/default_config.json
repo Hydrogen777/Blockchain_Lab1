@@ -1,0 +1,22 @@
+{
+  "chain_id": "lab01-blockchain",
+  "num_nodes": 8,
+  "network": {
+    "drop_rate": 0.05,
+    "duplicate_rate": 0.05,
+    "min_delay": 0.5,
+    "max_delay": 3.0,
+    "rate_limit_window": 5.0,
+    "max_msg_per_window": 5,
+    "block_duration": 10.0
+  },
+  "consensus": {
+    "block_time": 5.0,
+    "timeout": 30.0
+  },
+  "simulation": {
+    "random_seed": 42,
+    "duration": 100.0,
+    "num_transactions": 20
+  }
+}

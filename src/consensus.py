@@ -82,11 +82,11 @@ class ConsensusState:
         return True
 
     def try_finalize(self, height: int) -> Optional[str]:
-        if height in self.finalized_blocks:
-            return self.finalized_blocks[height]
-
         votes = self.precommits.get(height, [])
         if not votes:
+            # If already finalized, return it
+            if height in self.finalized_blocks:
+                return self.finalized_blocks[height]
             return None
 
         # Count votes by block_hash
@@ -107,5 +107,9 @@ class ConsensusState:
 
                 self.finalized_blocks[height] = bh
                 return bh
+
+        # If already finalized but no majority for different block, return it
+        if height in self.finalized_blocks:
+            return self.finalized_blocks[height]
 
         return None

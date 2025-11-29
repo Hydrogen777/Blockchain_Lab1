@@ -1,0 +1,5 @@
+# Blockchain Lab 01 - Requirements
+# Python 3.8+
+
+# Cryptography
+PyNaCl>=1.5.0

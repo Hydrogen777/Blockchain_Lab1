@@ -14,6 +14,10 @@ RATE_LIMIT_WINDOW = 5.0
 MAX_MSG_PER_WINDOW = 5 
 BLOCK_DURATION = 10.0   
 
+
+def set_random_seed(seed: int):
+    random.seed(seed)   
+
 @dataclass(order=True)
 class NetworkEvent:
     arrival_time: float
@@ -22,7 +26,7 @@ class NetworkEvent:
     message: Any = field(compare=False)
 
 class NetworkSimulator:
-    def __init__(self):
+    def __init__(self, logger=None):
         self.event_queue = []
         self.current_time = 0.0
         self.links: Dict[str, Set[str]] = {}
@@ -30,6 +34,8 @@ class NetworkSimulator:
         self.traffic_history: Dict[str, deque] = {}
         
         self.blocked_senders: Dict[str, float] = {}
+        
+        self.logger = logger
 
     def add_node(self, node_id: str):
         if node_id not in self.links:
@@ -98,20 +104,32 @@ class NetworkSimulator:
 
     def log(self, content: str, node_id: str = "NET", message: Any = None):
         msg_type = "UNK"
-        msg_height = "-"
+        msg_height = None
         if isinstance(message, dict):
             msg_type = message.get("type", "DATA") 
-            msg_height = str(message.get("height", "-"))
+            msg_height = message.get("height")
         
         elif isinstance(message, str) and message.startswith("{"):
             try:
                 data = json.loads(message)
                 msg_type = data.get("type", "DATA")
-                msg_height = str(data.get("height", "-"))
+                msg_height = data.get("height")
             except:
                 pass
 
-        print(f"[{self.current_time:.2f}] [{node_id}] [{msg_type}|H:{msg_height}] {content}")
+        if self.logger:
+            details = {"message": content}
+            if message:
+                details["msg_type"] = msg_type
+            self.logger.log(
+                event_type="NETWORK",
+                node_id=node_id,
+                timestamp=self.current_time,
+                details=details,
+                height=msg_height
+            )
+        else:
+            print(f"[{self.current_time:.2f}] [{node_id}] [{msg_type}|H:{msg_height}] {content}")
 
 # Test script
 if __name__ == "__main__":
