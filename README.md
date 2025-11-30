@@ -1,6 +1,6 @@
-# Blockchain Lab 1
+# HCMUS Blockchain Lab 01: Design and Implement a Minimal Layer 1 Blockchain 
 
-A Layer 1 Blockchain simulator built from scratch, implementation featuring BFT consensus, deterministic execution, and network simulation. This project is a hands-on exercise of blockchain fundamentals for the HCMUS Blockchain course.
+A Layer 1 Blockchain implementation, featuring BFT consensus, deterministic execution, and network simulation. This project is a hands-on exercise of blockchain fundamentals for the HCMUS Blockchain course.
 
 ## Group Members
 
