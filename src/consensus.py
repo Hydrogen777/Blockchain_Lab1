@@ -41,10 +41,6 @@ class Vote:
             "phase": self.phase,
         }
 
-
-# -------------------------------------------------------------------
-# 3. Consensus state management
-# -------------------------------------------------------------------
 class ConsensusState:
     def __init__(self, validator_set: Set[str], chain_id: str):
         self.validator_set = validator_set
@@ -54,11 +50,8 @@ class ConsensusState:
         self.precommits: Dict[int, List[Vote]] = {}
         self.finalized_blocks: Dict[int, str] = {}  # height -> block_hash
 
-    # --------------------------------------------------------------
-    # Add vote and verify
-    # --------------------------------------------------------------
     def handle_vote(self, vote: Vote) -> bool:
-        # 1. Verify signature
+        # Verify signature
         if vote.validator not in self.validator_set:
             return False
 
@@ -71,7 +64,7 @@ class ConsensusState:
         ):
             return False
 
-        # 2. Store vote
+        # Store vote
         if vote.phase == "prevote":
             self.prevotes.setdefault(vote.height, []).append(vote)
 

@@ -19,20 +19,16 @@ class Transaction:
             "value": self.value,
         }
 
-
-# -------------------------------------------------------------------
-# State object (key-value)
-# -------------------------------------------------------------------
 class AppState:
     def __init__(self):
         self.data = {}  # deterministic Python dict
 
     def apply_tx(self, tx: Transaction, chain_id: str) -> bool:
-        # 1. Ensure key belongs to sender
+        # Ensure key belongs to sender
         if not tx.key.startswith(tx.sender + "/"):
             return False
 
-        # 2. Verify signature
+        # Verify signature
         ok = Validator.verify(
             public_key_hex=tx.sender,
             signature_hex=tx.signature,
@@ -52,7 +48,7 @@ class AppState:
         return CryptoUtils.hash_data(self.data)
 
 def build_block(parent_header, txs: list, proposer_key, chain_id: str):
-    # 1. Execute txs on fresh state
+    # Execute txs on fresh state
     state = AppState()
     for tx in txs:
         if not state.apply_tx(tx, chain_id):
@@ -68,7 +64,7 @@ def build_block(parent_header, txs: list, proposer_key, chain_id: str):
         proposer=proposer_key.get_public_key_hex(),
     )
 
-    # 2. Sign header
+    # Sign header
     header.signature = proposer_key.sign(
         message=header.encode(),
         context="HEADER",
