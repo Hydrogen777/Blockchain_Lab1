@@ -52,33 +52,3 @@ class Validator:
             return True
         except (BadSignatureError, ValueError):
             return False
-
-#Test script
-
-if __name__ == "__main__":
-    CHAIN_ID = "lab01-chain"
-
-    alice_node = NodeKey()
-    alice_pub_key = alice_node.get_public_key_hex()
-    print(f"Alice Public Key: {alice_pub_key[:10]}...")
-
-    tx_content = {
-        "sender": "Alice",
-        "recipient": "Bob",
-        "amount": 100,
-        "nonce": 1
-    }
-    
-    signature = alice_node.sign(tx_content, context="TX", chain_id=CHAIN_ID)
-    print(f"Signature: {signature[:10]}...")
-
-    is_valid = Validator.verify(alice_pub_key, signature, tx_content, "TX", CHAIN_ID)
-    print(f"Check 1 (Valid): {is_valid}")  # Output: True
-
-    is_fake_vote_valid = Validator.verify(alice_pub_key, signature, tx_content, "VOTE", CHAIN_ID)
-    print(f"Check 2 (Replay Attack with wrong Context): {is_fake_vote_valid}") # Output: False
-
-    tampered_tx = tx_content.copy()
-    tampered_tx["amount"] = 1000
-    is_tampered_valid = Validator.verify(alice_pub_key, signature, tampered_tx, "TX", CHAIN_ID)
-    print(f"Check 3 (Tampered Data): {is_tampered_valid}") # Output: False

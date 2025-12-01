@@ -130,25 +130,3 @@ class NetworkSimulator:
             )
         else:
             print(f"[{self.current_time:.2f}] [{node_id}] [{msg_type}|H:{msg_height}] {content}")
-
-# Test script
-if __name__ == "__main__":
-    net = NetworkSimulator()
-    net.connect("Alice", "Bob")
-    net.connect("Bob", "Charlie")
-
-    print("--- Test 1: Topology & Routing ---")
-    net.send("Alice", "Bob", {"type": "TX", "height": 10, "data": "Hello Bob"})
-    net.send("Alice", "Charlie", "Hello Charlie")
-
-    print("\n--- Test 2: Rate Limiting & Blocking ---")
-    for i in range(7):
-        net.send("Alice", "Bob", {"type": "SPAM", "id": i})
-        net.tick(0.1)
-
-    print("\n--- Test 3: Simulation Loop ---")
-    for i in range(10):
-        print(f"\n--- Tick {i} (Time: {net.current_time:.1f}) ---")
-        events = net.tick(1.0)
-        for e in events:
-            print(f"   >>> HANDLER: {e.receiver_id} received '{e.message}'")
